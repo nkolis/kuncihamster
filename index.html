@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kunci Curut Kombat</title>
+  <style>
+    body {
+      font-family: 'Open sans', Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      position: relative;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    button .loading-icon {
+      display: none;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      /* Light grey */
+      border-radius: 50%;
+      border-top: 3px solid #fff;
+      /* White */
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .result-container {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      /* Preserve whitespace formatting */
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-muted {
+      color: rgb(58, 58, 58);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h3 class="text-center">Generate Kunci Hamster Kombat 🔑</h3>
+
+    <div class="form-group">
+      <label for="gameSelect">Pilih Game:</label>
+      <select id="gameSelect">
+        <option value="BIKE">BIKE</option>
+        <option value="CLONE">CLONE</option>
+        <option value="CUBE">CUBE</option>
+        <option value="TRAIN">TRAIN</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="keyCount">Jumlah:</label>
+      <select id="keyCount">
+        <option value="1">1 Kunci</option>
+        <option value="2">2 Kunci</option>
+        <option value="3">3 Kunci</option>
+        <option value="4">4 Kunci</option>
+      </select>
+    </div>
+
+    <button id="generateButton" onclick="generateKeys()">
+      <span class="loading-icon"></span>&nbsp; <!-- Loading icon -->
+      <span id="text-generate">Generate Kunci</span>
+    </button>
+
+    <div class="result-container" id="result"></div>
+    <div class="error-message" id="errorMessage">Error generating promo code. Please try again.</div>
+  </div>
+  <p class="text-center text-muted">By <a href="https://github.com/nkolis">Nkholis</a></p>
+
+  <script>
+    const games = {
+      BIKE: {
+        appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50',
+        promoId: '43e35910-c168-4634-ad4f-52fd764a843f',
+        delay: 20000,
+        retry: 20000,
+        keys: 1,
+      },
+      CLONE: {
+        appToken: '74ee0b5b-775e-4bee-974f-63e7f4d5bacb',
+        promoId: 'fe693b26-b342-4159-8808-15e3ff7f8767',
+        delay: 120000,
+        retry: 20000,
+        keys: 1,
+      },
+      CUBE: {
+        appToken: 'd1690a07-3780-4068-810f-9b5bbf2931b2',
+        promoId: 'b4170868-cef0-424f-8eb9-be0622e8e8e3',
+        delay: 20000,
+        retry: 20000,
+        keys: 1,
+      },
+      TRAIN: {
+        appToken: '82647f43-3f87-402d-88dd-09a90025313f',
+        promoId: 'c4480ac7-e178-4973-8061-9ed5b2e17954',
+        delay: 120000,
+        retry: 20000,
+        keys: 1,
+      },
+    };
+
+    const MAX_RETRIES = 6;
+
+    function uuidv4() {
+      return '10000000-1000-4000-8000-100000000000'.replace(
+        /[018]/g,
+        c => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16),
+      );
+    }
+
+    async function delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function fetchApi(path, authTokenOrBody = null, body = null) {
+      const options = {
+        method: 'POST',
+        cache: 'no-store',
+      };
+
+      if (typeof authTokenOrBody === 'string') {
+        options.headers = {
+          ...(options.headers ?? {}),
+          authorization: `Bearer ${authTokenOrBody}`,
+        };
+      }
+
+      if ((authTokenOrBody !== null && typeof authTokenOrBody !== 'string') || body !== null) {
+        options.headers = {
+          ...(options.headers ?? {}),
+          'content-type': 'application/json',
+        };
+
+        options.body = JSON.stringify(body ?? authTokenOrBody);
+      }
+
+      const url = `https://api.gamepromo.io${path}`;
+      const res = await fetch(url, options);
+
+      if (!res.ok) {
+        const data = await res.text();
+        throw new Error(`${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      return data;
+    }
+
+    async function getPromoCode(gameKey) {
+      const gameConfig = games[gameKey];
+      const clientId = uuidv4();
+
+      const loginClientData = await fetchApi('/promo/login-client', {
+        appToken: gameConfig.appToken,
+        clientId,
+        clientOrigin: 'ios',
+      });
+
+      await delay(gameConfig.delay);
+
+      const authToken = loginClientData.clientToken;
+      let promoCode = null;
+
+      for (let i = 0; i < MAX_RETRIES; i++) {
+        const registerEventData = await fetchApi('/promo/register-event', authToken, {
+          promoId: gameConfig.promoId,
+          eventId: uuidv4(),
+          eventOrigin: 'undefined'
+        });
+
+        if (!registerEventData.hasCode) {
+          await delay(gameConfig.retry);
+          continue;
+        }
+
+        const createCodeData = await fetchApi('/promo/create-code', authToken, {
+          promoId: gameConfig.promoId,
+        });
+
+        promoCode = createCodeData.promoCode;
+        break;
+      }
+
+      if (promoCode === null) {
+        throw new Error(`Unable to get ${gameKey} promo`);
+      }
+
+      return promoCode;
+    }
+
+    async function generateKeys() {
+      const gameKey = document.getElementById('gameSelect').value;
+      const keyCount = document.getElementById('keyCount').value;
+      const errorMessage = document.getElementById('errorMessage');
+      const resultElement = document.getElementById('result');
+      const generateButton = document.getElementById('generateButton');
+      const textGenerateButton = document.getElementById('text-generate');
+
+      resultElement.textContent = '';
+      errorMessage.style.display = 'none';
+
+      // Disable the button and show loading icon
+      generateButton.disabled = true;
+      textGenerateButton.textContent = 'Kunci sedang digenerate..'
+      generateButton.querySelector('.loading-icon').style.display = 'block';
+
+      try {
+        for (let i = 0; i < keyCount; i++) {
+          const code = await getPromoCode(gameKey);
+          resultElement.textContent += `Kunci ${i + 1}: ${code}\n`;
+        }
+      } catch (error) {
+        errorMessage.style.display = 'block';
+      } finally {
+        generateButton.disabled = false; // Re-enable the button
+        textGenerateButton.textContent = "Generate Kunci"
+        generateButton.querySelector('.loading-icon').style.display = 'none';
+      }
+    }
+  </script>
+
+</body>
+
+</html>
