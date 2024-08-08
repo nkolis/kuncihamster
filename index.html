@@ -5,146 +5,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kunci Curut Kombat</title>
-  <style>
-    body {
-      font-family: 'Open sans', Arial, sans-serif;
-      background-color: #f0f0f0;
-      padding: 20px;
-    }
-
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      margin: 50px auto 0px auto;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    select,
-    button {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      position: relative;
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    button:disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
-
-    button .loading-icon {
-      display: none;
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      /* Light grey */
-      border-radius: 50%;
-      border-top: 3px solid #fff;
-      /* White */
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .result-container {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      white-space: pre-wrap;
-      /* Preserve whitespace formatting */
-    }
-
-    .error-message {
-      color: red;
-      margin-top: 15px;
-      display: none;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .text-muted {
-      color: rgb(58, 58, 58);
-      font-size: 12px;
-    }
-  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="bg-gray-100 font-sans">
+  <h3 class="text-center mt-6 text-2xl font-semibold text-gray-800">Mini Game Hamster Kombat 🔑</h3>
+  <div class="max-w-md mx-auto mt-12 p-6 bg-white rounded-lg shadow-md mt-10">
 
-  <div class="container">
-    <h3 class="text-center">Generate Kunci Hamster Kombat 🔑</h3>
-
-    <div class="form-group">
-      <label for="gameSelect">Pilih Game:</label>
-      <select id="gameSelect">
-        <option value="BIKE">BIKE</option>
-        <option value="CLONE">CLONE</option>
-        <option value="CUBE">CUBE</option>
-        <option value="TRAIN">TRAIN</option>
+    <div class="my-4">
+      <label for="gameSelect" class="block mb-2 text-sm font-medium text-gray-900">Pilih Mini Game</label>
+      <select id="gameSelect"
+        class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        <option value="BIKE">Bike Ride 3D</option>
+        <option value="CLONE">My Clone Army</option>
+        <option value="CUBE">Chain Cube 2048</option>
+        <option value="TRAIN">Train Miner</option>
       </select>
     </div>
 
-    <div class="form-group">
-      <label for="keyCount">Jumlah:</label>
-      <select id="keyCount">
-        <option value="1">1 Kunci</option>
-        <option value="2">2 Kunci</option>
-        <option value="3">3 Kunci</option>
-        <option value="4">4 Kunci</option>
+    <div class="my-4">
+      <label for="keyCount" class="block mb-2 text-sm font-medium text-gray-900">Jumlah Kunci</label>
+      <select id="keyCount"
+        class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        <option value="1">1 🔑</option>
+        <option value="2">2 🔑</option>
+        <option value="3">3 🔑</option>
+        <option value="4">4 🔑</option>
       </select>
     </div>
 
-    <button id="generateButton" onclick="generateKeys()">
-      <span class="loading-icon"></span>&nbsp; <!-- Loading icon -->
+    <button id="generateButton" onclick="generateKeys()"
+      class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center justify-center">
+      <svg aria-hidden="true" id="spinner" role="status" class="hidden inline w-4 h-4 me-3 text-white animate-spin"
+        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+          fill="#E5E7EB" />
+        <path
+          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+          fill="currentColor" />
+      </svg>
+      &nbsp;
       <span id="text-generate">Generate Kunci</span>
     </button>
 
-    <div class="result-container" id="result"></div>
-    <div class="error-message" id="errorMessage">Error generating promo code. Please try again.</div>
+
+    <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg" id="result"></div>
+    <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
   </div>
-  <p class="text-center text-muted">By <a href="https://github.com/nkolis">Nkholis</a></p>
+
+  <p class="text-center text-gray-500 mt-6 text-sm">By <a href="https://github.com/nkolis"
+      class="text-blue-600 hover:underline">Nkholis</a></p>
 
   <script>
     const games = {
@@ -276,12 +187,12 @@
       const textGenerateButton = document.getElementById('text-generate');
 
       resultElement.textContent = '';
-      errorMessage.style.display = 'none';
+      errorMessage.classList.add('hidden');
 
       // Disable the button and show loading icon
       generateButton.disabled = true;
       textGenerateButton.textContent = 'Kunci sedang digenerate..'
-      generateButton.querySelector('.loading-icon').style.display = 'block';
+      generateButton.querySelector('#spinner').classList.remove('hidden');
 
       try {
         for (let i = 0; i < keyCount; i++) {
@@ -289,15 +200,14 @@
           resultElement.textContent += `Kunci ${i + 1}: ${code}\n`;
         }
       } catch (error) {
-        errorMessage.style.display = 'block';
+        errorMessage.classList.remove('hidden');
       } finally {
         generateButton.disabled = false; // Re-enable the button
         textGenerateButton.textContent = "Generate Kunci"
-        generateButton.querySelector('.loading-icon').style.display = 'none';
+        generateButton.querySelector('#spinner').classList.add('hidden');
       }
     }
   </script>
-
 </body>
 
 </html>
