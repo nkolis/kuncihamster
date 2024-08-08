@@ -178,6 +178,15 @@
       return promoCode;
     }
 
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Kunci disalin ke clipboard!');
+      }).catch(err => {
+        console.error('Gagal menyalin kunci:', err);
+      });
+    }
+
+
     async function generateKeys() {
       const gameKey = document.getElementById('gameSelect').value;
       const keyCount = document.getElementById('keyCount').value;
@@ -191,14 +200,23 @@
 
       // Disable the button and show loading icon
       generateButton.disabled = true;
-      textGenerateButton.textContent = 'Kunci sedang digenerate..'
+      textGenerateButton.textContent = 'Sedang membuat kunci..'
       generateButton.querySelector('#spinner').classList.remove('hidden');
 
       try {
         for (let i = 0; i < keyCount; i++) {
           const code = await getPromoCode(gameKey);
-          resultElement.textContent += `Kunci ${i + 1}: ${code}\n`;
+          const keyHtml = `
+            <div class="flex justify-between items-center mt-2">
+              <span>Kunci ${i + 1}: ${code}</span>
+              <button onclick="copyToClipboard('${code}')" class="text-blue-600 hover:underline text-sm">
+                Copy
+              </button>
+            </div>
+          `;
+          resultElement.innerHTML += keyHtml;
         }
+
       } catch (error) {
         errorMessage.classList.remove('hidden');
       } finally {
