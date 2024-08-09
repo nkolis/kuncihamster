@@ -46,7 +46,7 @@
           fill="currentColor" />
       </svg>
       &nbsp;
-      <span id="text-generate">Buat Kunci</span>
+      <span id="text-generate">Generate</span>
     </button>
 
 
@@ -200,7 +200,7 @@
 
       // Disable the button and show loading icon
       generateButton.disabled = true;
-      textGenerateButton.textContent = 'Sedang membuat kunci..'
+      textGenerateButton.textContent = 'Tunggu..'
       generateButton.querySelector('#spinner').classList.remove('hidden');
 
       try {
@@ -208,7 +208,7 @@
           const code = await getPromoCode(gameKey);
           const keyHtml = `
             <div class="flex justify-between items-center mt-2">
-              <span>Kunci ${i + 1}: ${code}</span>
+              <span>${code}</span>
               <button onclick="copyToClipboard('${code}')" class="text-blue-600 hover:underline text-sm">
                 Copy
               </button>
@@ -221,7 +221,7 @@
         errorMessage.classList.remove('hidden');
       } finally {
         generateButton.disabled = false; // Re-enable the button
-        textGenerateButton.textContent = "Generate Kunci"
+        textGenerateButton.textContent = "Generate"
         generateButton.querySelector('#spinner').classList.add('hidden');
       }
     }
