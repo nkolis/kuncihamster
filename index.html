@@ -54,9 +54,7 @@
     <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
   </div>
 
-  <p class="text-center text-gray-500 mt-6 text-sm">By <a href="https://github.com/nkolis"
-      class="text-blue-600 hover:underline">Nkholis</a></p>
-
+  
   <script>
     const games = {
       BIKE: {
@@ -218,7 +216,7 @@
         onclick="copyToClipboard(this, '${code}')"
         data-tooltip-target="tooltip-default">
         <span class="tooltip-inner absolute left-1/2 transform -translate-x-1/2 translate-y-full mt-1 bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Copy</span>
-        Copy
+        
       </button>
     </div>`;
   resultElement.innerHTML += keyHtml;
