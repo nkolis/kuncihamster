@@ -49,8 +49,12 @@
       <span id="text-generate">Generate</span>
     </button>
 
-
     <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg" id="result"></div>
+
+    <button id="copyAllButton" onclick="copyAllKeys()" class="w-full mt-2 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+      Copy All Codes
+    </button>
+
     <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
   </div>
 
@@ -118,114 +122,102 @@
       if ((authTokenOrBody !== null && typeof authTokenOrBody !== 'string') || body !== null) {
         options.headers = {
           ...(options.headers ?? {}),
-          'content-type': 'application/json',
+          '
+            'Content-Type': 'application/json',
         };
-
         options.body = JSON.stringify(body ?? authTokenOrBody);
       }
 
-      const url = `https://api.gamepromo.io${path}`;
-      const res = await fetch(url, options);
-
-      if (!res.ok) {
-        const data = await res.text();
-        throw new Error(`${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      return data;
+      const response = await fetch(`https://api-dev.curut.app${path}`, options);
+      return await response.json();
     }
-
-    async function getPromoCode(gameKey) {
-      const gameConfig = games[gameKey];
-      const clientId = uuidv4();
-
-      const loginClientData = await fetchApi('/promo/login-client', {
-        appToken: gameConfig.appToken,
-        clientId,
-        clientOrigin: 'ios',
-      });
-
-      await delay(gameConfig.delay);
-
-      const authToken = loginClientData.clientToken;
-      let promoCode = null;
-
-      for (let i = 0; i < MAX_RETRIES; i++) {
-        const registerEventData = await fetchApi('/promo/register-event', authToken, {
-          promoId: gameConfig.promoId,
-          eventId: uuidv4(),
-          eventOrigin: 'undefined'
-        });
-
-        if (!registerEventData.hasCode) {
-          await delay(gameConfig.retry);
-          continue;
-        }
-
-        const createCodeData = await fetchApi('/promo/create-code', authToken, {
-          promoId: gameConfig.promoId,
-        });
-
-        promoCode = createCodeData.promoCode;
-        break;
-      }
-
-      if (promoCode === null) {
-        throw new Error(`Unable to get ${gameKey} promo`);
-      }
-
-      return promoCode;
-    }
-
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Kunci disalin ke clipboard!');
-      }).catch(err => {
-        console.error('Gagal menyalin kunci:', err);
-      });
-    }
-
 
     async function generateKeys() {
-      const gameKey = document.getElementById('gameSelect').value;
-      const keyCount = document.getElementById('keyCount').value;
-      const errorMessage = document.getElementById('errorMessage');
-      const resultElement = document.getElementById('result');
-      const generateButton = document.getElementById('generateButton');
-      const textGenerateButton = document.getElementById('text-generate');
+      const game = games[document.getElementById('gameSelect').value];
+      const keyCount = parseInt(document.getElementById('keyCount').value, 10);
 
-      resultElement.textContent = '';
-      errorMessage.classList.add('hidden');
+      document.getElementById('spinner').classList.remove('hidden');
+      document.getElementById('text-generate').textContent = 'Generating...';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('errorMessage').classList.add('hidden');
 
-      // Disable the button and show loading icon
-      generateButton.disabled = true;
-      textGenerateButton.textContent = 'Tunggu..'
-      generateButton.querySelector('#spinner').classList.remove('hidden');
+      const keys = [];
 
       try {
         for (let i = 0; i < keyCount; i++) {
-          const code = await getPromoCode(gameKey);
-          const keyHtml = `
-            <div class="flex justify-between items-center mt-2">
-              <span>${code}</span>
-              <button onclick="copyToClipboard('${code}')" class="text-blue-600 hover:underline text-sm">
-                Copy
-              </button>
-            </div>
-          `;
-          resultElement.innerHTML += keyHtml;
+          let retries = 0;
+          let success = false;
+
+          while (!success && retries < MAX_RETRIES) {
+            const promoCodeId = uuidv4();
+            const response = await fetchApi(
+              '/generate-promo-code',
+              game.appToken,
+              {
+                promoId: game.promoId,
+                promoCodeId: promoCodeId,
+              }
+            );
+
+            if (response && response.data && response.data.code) {
+              keys.push(response.data.code);
+              success = true;
+            } else {
+              retries++;
+              await delay(game.retry);
+            }
+          }
+
+          if (!success) {
+            throw new Error('Failed to generate promo code after maximum retries');
+          }
+
+          await delay(game.delay);
         }
 
+        keys.forEach((key, index) => {
+          const keyElement = document.createElement('div');
+          keyElement.className = 'flex items-center justify-between p-2 mb-2 bg-white border border-gray-200 rounded-lg';
+          keyElement.innerHTML = `
+            <span>${key}</span>
+            <button onclick="copyKey('${key}', this)"
+              class="copy-btn tooltip p-1 ml-2 text-blue-600 hover:text-blue-800">
+              Copy
+            </button>
+          `;
+          document.getElementById('result').appendChild(keyElement);
+        });
+
       } catch (error) {
-        errorMessage.classList.remove('hidden');
+        document.getElementById('errorMessage').classList.remove('hidden');
       } finally {
-        generateButton.disabled = false; // Re-enable the button
-        textGenerateButton.textContent = "Generate"
-        generateButton.querySelector('#spinner').classList.add('hidden');
+        document.getElementById('spinner').classList.add('hidden');
+        document.getElementById('text-generate').textContent = 'Generate';
       }
     }
+
+    function copyKey(key, button) {
+      navigator.clipboard.writeText(key).then(() => {
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+          button.textContent = 'Copy';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy key: ', err);
+      });
+    }
+
+    function copyAllKeys() {
+      const keys = Array.from(document.querySelectorAll('#result span')).map(span => span.textContent).join('\n');
+      navigator.clipboard.writeText(keys).then(() => {
+        alert('All keys copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy keys: ', err);
+      });
+    }
   </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 </body>
 
 </html>
