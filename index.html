@@ -50,12 +50,10 @@
     </button>
 
     <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg" id="result"></div>
-
-    <button id="copyAllButton" onclick="copyAllKeys()" class="w-full mt-2 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-      Copy All Codes
-    </button>
-
     <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
+    <button id="copyAllButton" onclick="copyAllCodes()" class="hidden mt-4 w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+        Copy All Codes
+    </button>
   </div>
 
   <p class="text-center text-gray-500 mt-6 text-sm">By <a href="https://github.com/nkolis"
@@ -119,105 +117,101 @@
         };
       }
 
-      if ((authTokenOrBody !== null && typeof authTokenOrBody !== 'string') || body !== null) {
+      if ((authTokenOrBody ?? body) !== null) {
         options.headers = {
           ...(options.headers ?? {}),
-          '
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         };
-        options.body = JSON.stringify(body ?? authTokenOrBody);
+
+        options.body = JSON.stringify(authTokenOrBody ?? body);
       }
 
-      const response = await fetch(`https://api-dev.curut.app${path}`, options);
-      return await response.json();
+      const response = await fetch(`https://api.hbtgames.com/${path}`, options);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
     }
 
     async function generateKeys() {
-      const game = games[document.getElementById('gameSelect').value];
-      const keyCount = parseInt(document.getElementById('keyCount').value, 10);
+      const gameKey = document.getElementById('gameSelect').value;
+      const count = parseInt(document.getElementById('keyCount').value);
+      const resultContainer = document.getElementById('result');
+      const copyAllButton = document.getElementById('copyAllButton');
+      resultContainer.innerHTML = ''; // Clear previous results
 
       document.getElementById('spinner').classList.remove('hidden');
       document.getElementById('text-generate').textContent = 'Generating...';
-      document.getElementById('result').innerHTML = '';
-      document.getElementById('errorMessage').classList.add('hidden');
-
-      const keys = [];
+      document.getElementById('generateButton').disabled = true;
 
       try {
-        for (let i = 0; i < keyCount; i++) {
-          let retries = 0;
-          let success = false;
-
-          while (!success && retries < MAX_RETRIES) {
-            const promoCodeId = uuidv4();
-            const response = await fetchApi(
-              '/generate-promo-code',
-              game.appToken,
-              {
-                promoId: game.promoId,
-                promoCodeId: promoCodeId,
-              }
-            );
-
-            if (response && response.data && response.data.code) {
-              keys.push(response.data.code);
-              success = true;
-            } else {
-              retries++;
-              await delay(game.retry);
-            }
-          }
-
-          if (!success) {
-            throw new Error('Failed to generate promo code after maximum retries');
-          }
-
-          await delay(game.delay);
+        const game = games[gameKey];
+        const keys = [];
+        for (let i = 0; i < count; i++) {
+          const generatedKey = await generateKey(game);
+          keys.push(generatedKey);
+          resultContainer.innerHTML += `<p>${generatedKey}</p>`;
         }
-
-        keys.forEach((key, index) => {
-          const keyElement = document.createElement('div');
-          keyElement.className = 'flex items-center justify-between p-2 mb-2 bg-white border border-gray-200 rounded-lg';
-          keyElement.innerHTML = `
-            <span>${key}</span>
-            <button onclick="copyKey('${key}', this)"
-              class="copy-btn tooltip p-1 ml-2 text-blue-600 hover:text-blue-800">
-              Copy
-            </button>
-          `;
-          document.getElementById('result').appendChild(keyElement);
-        });
-
+        copyAllButton.classList.remove('hidden'); // Show the copy all button
       } catch (error) {
         document.getElementById('errorMessage').classList.remove('hidden');
+        console.error('Error:', error);
       } finally {
         document.getElementById('spinner').classList.add('hidden');
         document.getElementById('text-generate').textContent = 'Generate';
+        document.getElementById('generateButton').disabled = false;
       }
     }
 
-    function copyKey(key, button) {
-      navigator.clipboard.writeText(key).then(() => {
-        button.textContent = 'Copied!';
-        setTimeout(() => {
-          button.textContent = 'Copy';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy key: ', err);
-      });
+    async function generateKey(game) {
+      let retries = 0;
+      while (retries < MAX_RETRIES) {
+        try {
+          const { token } = await fetchApi(
+            'token-auth/issue',
+            {
+              app_token: game.appToken,
+              uuid: uuidv4(),
+              platform: 'WEB',
+            },
+          );
+
+          const keyResponse = await fetchApi(
+            'promo-codes/redeem',
+            token,
+            { promo_code_id: game.promoId },
+          );
+
+          if (keyResponse.code) {
+            return keyResponse.code;
+          }
+
+          if (keyResponse.message) {
+            throw new Error(keyResponse.message);
+          }
+        } catch (error) {
+          console.error('Retrying...', error);
+          retries += 1;
+          await delay(game.retry);
+        }
+      }
+      throw new Error('Failed to generate key after max retries');
     }
 
-    function copyAllKeys() {
-      const keys = Array.from(document.querySelectorAll('#result span')).map(span => span.textContent).join('\n');
-      navigator.clipboard.writeText(keys).then(() => {
-        alert('All keys copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy keys: ', err);
-      });
+    function copyAllCodes() {
+      const resultContainer = document.getElementById('result');
+      const range = document.createRange();
+      range.selectNode(resultContainer);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+
+      alert('All codes copied to clipboard!');
     }
   </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 </body>
-
 </html>
