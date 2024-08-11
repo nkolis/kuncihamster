@@ -206,8 +206,10 @@
       generateButton.querySelector('#spinner').classList.remove('hidden');
 
       try {
+        let keys = []
         for (let i = 0; i < keyCount; i++) {
             const code = await getPromoCode(gameKey);
+            keys.push(code);
             const keyHtml = `
     <div class="flex justify-between items-center mt-2">
       <span>${code}</span>
@@ -220,6 +222,17 @@
       </button>
     </div>`;
   resultElement.innerHTML += keyHtml;
+          if(i == keyCount - 1) {
+            resultElement.innerHTML += `
+            <button 
+        class="flex w-full text-blue-600 hover:underline text-sm" 
+        onclick="copyToClipboard(this, '${keys.join("\n")}')"
+        data-tooltip-target="tooltip-default">
+        <span class="tooltip-inner text-white text-xs rounded-lg py-1 px-2 z-10">Copy all</span>
+        
+      </button>
+            `
+          }
         }
 
       } catch (error) {
