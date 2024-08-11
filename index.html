@@ -49,11 +49,9 @@
       <span id="text-generate">Generate</span>
     </button>
 
+
     <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg" id="result"></div>
     <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
-    <button id="copyAllButton" onclick="copyAllCodes()" class="hidden mt-4 w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-        Copy All Codes
-    </button>
   </div>
 
   <p class="text-center text-gray-500 mt-6 text-sm">By <a href="https://github.com/nkolis"
@@ -117,101 +115,117 @@
         };
       }
 
-      if ((authTokenOrBody ?? body) !== null) {
+      if ((authTokenOrBody !== null && typeof authTokenOrBody !== 'string') || body !== null) {
         options.headers = {
           ...(options.headers ?? {}),
-          'Content-Type': 'application/json',
+          'content-type': 'application/json',
         };
 
-        options.body = JSON.stringify(authTokenOrBody ?? body);
+        options.body = JSON.stringify(body ?? authTokenOrBody);
       }
 
-      const response = await fetch(`https://api.hbtgames.com/${path}`, options);
+      const url = `https://api.gamepromo.io${path}`;
+      const res = await fetch(url, options);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!res.ok) {
+        const data = await res.text();
+        throw new Error(`${res.status} ${res.statusText}`);
       }
 
-      return response.json();
+      const data = await res.json();
+      return data;
     }
+
+    async function getPromoCode(gameKey) {
+      const gameConfig = games[gameKey];
+      const clientId = uuidv4();
+
+      const loginClientData = await fetchApi('/promo/login-client', {
+        appToken: gameConfig.appToken,
+        clientId,
+        clientOrigin: 'ios',
+      });
+
+      await delay(gameConfig.delay);
+
+      const authToken = loginClientData.clientToken;
+      let promoCode = null;
+
+      for (let i = 0; i < MAX_RETRIES; i++) {
+        const registerEventData = await fetchApi('/promo/register-event', authToken, {
+          promoId: gameConfig.promoId,
+          eventId: uuidv4(),
+          eventOrigin: 'undefined'
+        });
+
+        if (!registerEventData.hasCode) {
+          await delay(gameConfig.retry);
+          continue;
+        }
+
+        const createCodeData = await fetchApi('/promo/create-code', authToken, {
+          promoId: gameConfig.promoId,
+        });
+
+        promoCode = createCodeData.promoCode;
+        break;
+      }
+
+      if (promoCode === null) {
+        throw new Error(`Unable to get ${gameKey} promo`);
+      }
+
+      return promoCode;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Kunci disalin ke clipboard!');
+      }).catch(err => {
+        console.error('Gagal menyalin kunci:', err);
+      });
+    }
+
 
     async function generateKeys() {
       const gameKey = document.getElementById('gameSelect').value;
-      const count = parseInt(document.getElementById('keyCount').value);
-      const resultContainer = document.getElementById('result');
-      const copyAllButton = document.getElementById('copyAllButton');
-      resultContainer.innerHTML = ''; // Clear previous results
+      const keyCount = document.getElementById('keyCount').value;
+      const errorMessage = document.getElementById('errorMessage');
+      const resultElement = document.getElementById('result');
+      const generateButton = document.getElementById('generateButton');
+      const textGenerateButton = document.getElementById('text-generate');
 
-      document.getElementById('spinner').classList.remove('hidden');
-      document.getElementById('text-generate').textContent = 'Generating...';
-      document.getElementById('generateButton').disabled = true;
+      resultElement.textContent = '';
+      errorMessage.classList.add('hidden');
+
+      // Disable the button and show loading icon
+      generateButton.disabled = true;
+      textGenerateButton.textContent = 'Tunggu..'
+      generateButton.querySelector('#spinner').classList.remove('hidden');
 
       try {
-        const game = games[gameKey];
-        const keys = [];
-        for (let i = 0; i < count; i++) {
-          const generatedKey = await generateKey(game);
-          keys.push(generatedKey);
-          resultContainer.innerHTML += `<p>${generatedKey}</p>`;
+        for (let i = 0; i < keyCount; i++) {
+          const code = await getPromoCode(gameKey);
+          const keyHtml = `
+            <div class="flex justify-between items-center mt-2">
+              <span>${code}</span>
+              <button onclick="copyToClipboard('${code}')" class="text-blue-600 hover:underline text-sm">
+                Copy
+              </button>
+            </div>
+          `;
+          resultElement.innerHTML += keyHtml;
         }
-        copyAllButton.classList.remove('hidden'); // Show the copy all button
+
       } catch (error) {
-        document.getElementById('errorMessage').classList.remove('hidden');
-        console.error('Error:', error);
+        errorMessage.classList.remove('hidden');
       } finally {
-        document.getElementById('spinner').classList.add('hidden');
-        document.getElementById('text-generate').textContent = 'Generate';
-        document.getElementById('generateButton').disabled = false;
+        generateButton.disabled = false; // Re-enable the button
+        textGenerateButton.textContent = "Generate"
+        generateButton.querySelector('#spinner').classList.add('hidden');
       }
-    }
-
-    async function generateKey(game) {
-      let retries = 0;
-      while (retries < MAX_RETRIES) {
-        try {
-          const { token } = await fetchApi(
-            'token-auth/issue',
-            {
-              app_token: game.appToken,
-              uuid: uuidv4(),
-              platform: 'WEB',
-            },
-          );
-
-          const keyResponse = await fetchApi(
-            'promo-codes/redeem',
-            token,
-            { promo_code_id: game.promoId },
-          );
-
-          if (keyResponse.code) {
-            return keyResponse.code;
-          }
-
-          if (keyResponse.message) {
-            throw new Error(keyResponse.message);
-          }
-        } catch (error) {
-          console.error('Retrying...', error);
-          retries += 1;
-          await delay(game.retry);
-        }
-      }
-      throw new Error('Failed to generate key after max retries');
-    }
-
-    function copyAllCodes() {
-      const resultContainer = document.getElementById('result');
-      const range = document.createRange();
-      range.selectNode(resultContainer);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('copy');
-      selection.removeAllRanges();
-
-      alert('All codes copied to clipboard!');
     }
   </script>
 </body>
+
 </html>
