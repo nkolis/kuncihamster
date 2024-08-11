@@ -178,12 +178,16 @@
       return promoCode;
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Kunci disalin ke clipboard!');
-      }).catch(err => {
-        console.error('Gagal menyalin kunci:', err);
-      });
+    function copyToClipboard(button, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const tooltip = button.querySelector('.tooltip-inner');
+    tooltip.textContent = 'Copied!';
+    setTimeout(() => {
+      tooltip.textContent = 'Copy';
+    }, 2000);
+  }).catch(err => {
+    console.error('Gagal menyalin kunci:', err);
+  });
     }
 
 
@@ -205,16 +209,19 @@
 
       try {
         for (let i = 0; i < keyCount; i++) {
-          const code = await getPromoCode(gameKey);
-          const keyHtml = `
-            <div class="flex justify-between items-center mt-2">
-              <span>${code}</span>
-              <button onclick="copyToClipboard('${code}')" class="text-blue-600 hover:underline text-sm">
-                Copy
-              </button>
-            </div>
-          `;
-          resultElement.innerHTML += keyHtml;
+            const code = await getPromoCode(gameKey);
+            const keyHtml = `
+    <div class="flex justify-between items-center mt-2">
+      <span>${code}</span>
+      <button 
+        class="relative text-blue-600 hover:underline text-sm" 
+        onclick="copyToClipboard(this, '${code}')"
+        data-tooltip-target="tooltip-default">
+        <span class="tooltip-inner absolute left-1/2 transform -translate-x-1/2 translate-y-full mt-1 bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Copy</span>
+        Copy
+      </button>
+    </div>`;
+  resultElement.innerHTML += keyHtml;
         }
 
       } catch (error) {
