@@ -177,15 +177,15 @@
     }
 
     function copyToClipboard(button, text, textDefault = 'Copy') {
-  navigator.clipboard.writeText(text).then(() => {
-    const tooltip = button.querySelector('.tooltip-inner');
-    tooltip.textContent = 'Copied!';
-    setTimeout(() => {
-      tooltip.textContent = textDefault;
-    }, 2000);
-  }).catch(err => {
-    console.error('Gagal menyalin kunci:', err);
-  });
+      navigator.clipboard.writeText(text).then(() => {
+        const tooltip = button.querySelector('.tooltip-inner');
+        tooltip.textContent = 'Copied!';
+        setTimeout(() => {
+          tooltip.textContent = textDefault;
+        }, 2000);
+      }).catch(err => {
+        console.error('Gagal menyalin kunci:', err);
+      });
     }
 
 
@@ -222,19 +222,18 @@
       </button>
     </div>`;
   resultElement.innerHTML += keyHtml;
-          if(i == keyCount - 1 && i > 0) {
-            const allKeys = keys.join('\n');
-            resultElement.innerHTML += `
-            <button 
-        class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
-        onclick="copyToClipboard(this, '${allKeys}', 'Copy all')"
-        data-tooltip-target="tooltip-default">
-        <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Copy all</span>
-        
-      </button>
+  if(i == keyCount - 1 && i > 0) {
+    const allKeys = keys.join('\n');
+    resultElement.innerHTML += `
+    <button 
+      class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
+      onclick="copyToClipboard(this, "${allKeys}", 'Copy all')"
+      data-tooltip-target="tooltip-default">
+      <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Copy all</span>
+    </button>
             `
-          }
-        }
+      }
+    }
 
       } catch (error) {
         errorMessage.classList.remove('hidden');
