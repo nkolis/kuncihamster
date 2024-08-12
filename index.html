@@ -227,7 +227,7 @@
     resultElement.innerHTML += `
     <button 
       class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
-      onclick='copyToClipboard(this, "${allKeys}", "Copy all")'
+      onclick='copyToClipboard(this, JSON.stringify(allKeys), "Copy all")'
       data-tooltip-target="tooltip-default">
       <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Copy all</span>
     </button>
