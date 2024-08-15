@@ -16,6 +16,7 @@
       <label for="gameSelect" class="block mb-2 text-sm font-medium text-gray-900">Pilih Mini Game</label>
       <select id="gameSelect"
         class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        <option value="MERGE">Merge Away</option>
         <option value="BIKE">Bike Ride 3D</option>
         <option value="CLONE">My Clone Army</option>
         <option value="CUBE">Chain Cube 2048</option>
@@ -57,6 +58,13 @@
   
   <script>
     const games = {
+      MERGE: {
+        appToken: '8d1cc2ad-e097-4b86-90ef-7a27e19fb833',
+        promoId: 'dc128d28-c45b-411c-98ff-ac7726fbaea4',
+        delay: 20000,
+        retry: 20000,
+        keys: 1,
+      },
       BIKE: {
         appToken: 'd28721be-fd2d-4b45-869e-9f253b554e50',
         promoId: '43e35910-c168-4634-ad4f-52fd764a843f',
