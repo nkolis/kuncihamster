@@ -16,6 +16,7 @@
       <label for="gameSelect" class="block mb-2 text-sm font-medium text-gray-900">Pilih Mini Game</label>
       <select id="gameSelect"
         class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        <option value="TWERK">Twerk Race</option>
         <option value="MERGE">Merge Away</option>
         <option value="BIKE">Bike Ride 3D</option>
         <option value="CLONE">My Clone Army</option>
@@ -58,6 +59,13 @@
   
   <script>
     const games = {
+      TWERK: {
+        appToken: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+        promoId: '61308365-9d16-4040-8bb0-2f4a4c69074c',
+        delay: 20000,
+        retry: 20000,
+        keys: 1,
+      },
       MERGE: {
         appToken: '8d1cc2ad-e097-4b86-90ef-7a27e19fb833',
         promoId: 'dc128d28-c45b-411c-98ff-ac7726fbaea4',
@@ -95,7 +103,7 @@
       },
     };
 
-    const MAX_RETRIES = 8;
+    const MAX_RETRIES = 12;
 
     function uuidv4() {
       return '10000000-1000-4000-8000-100000000000'.replace(
