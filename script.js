@@ -344,7 +344,7 @@ async function generateKeys() {
       keys.push(code);
       Logger.info(code);
 
-      if (WITH_REINSTALL_TIME && k !== gameKeys.length - 1 && i !== keys - 1) {
+      if (WITH_REINSTALL_TIME && i !== keyCount - 1) {
         await globalDelay((Math.floor(Math.random() * 11) + 20) * 1_000);
       }
 
