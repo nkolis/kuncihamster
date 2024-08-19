@@ -374,6 +374,7 @@ async function generateKeys() {
     }
 
   } catch (error) {
+    // console.log(error)
     errorMessage.classList.remove('hidden');
   } finally {
     generateButton.disabled = false; // Re-enable the button
