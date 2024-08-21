@@ -4,6 +4,26 @@ const SERVER_ERROR_RETRIES = 3;
 const WITH_REINSTALL_TIME = true;
 
 const games = {
+  POLY: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+    setup('app-token', '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71');
+    setup('promo-id', '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71');
+    setup('unity-version', '2021.3.39f1');
+
+    if (origin === 'ios') {
+      setup('user-agent', 'Polysphere/147 CFNetwork/1498.700.2 Darwin/23.6.0');
+    } else {
+      setup('user-agent', 'UnityPlayer/2021.3.39f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)');
+    }
+
+    await login({ clientOrigin: origin, clientId: id('uuid'), clientVersion: '1.15.2' });
+
+    while (!instance.hasCode) {
+      await delay(10_000);
+      await event({ eventId: id('uuid'), eventOrigin: 'undefined', eventType: 'test' });
+    }
+
+    await collect();
+  },
   TWERK: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
     setup('app-token', '61308365-9d16-4040-8bb0-2f4a4c69074c');
     setup('promo-id', '61308365-9d16-4040-8bb0-2f4a4c69074c');
