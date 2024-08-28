@@ -23,11 +23,21 @@ let DEVICE = parseArg(['d', 'device'], (it) => (['android', 'ios'].includes(it) 
 let EXCLUDE = parseArg(['e', 'exclude'], (it) => it.split(',').map((it2) => it2.trim()).filter((it2) => it2 !== ''), []);
 let KEYS = parseArg(['k', 'keys'], (it) => Number.parseInt(it, 10) || null, 4);
 
-//
-// Games
-//
 
 const GAMES = {
+  CAFE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+    setup('app-token', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
+    setup('promo-id', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
+
+    await login({ clientId: id('rand16'), clientOrigin: origin, clientVersion: '2.24.0' });
+
+    while (!instance.hasCode) {
+      await delay(TIMING_STRATEGY === 'realistic' ? 90_000 : 20_000);
+      await event({ eventId: id('ts'), eventOrigin: 'undefined', eventType: '5visitorsChecks' });
+    }
+
+    await collect();
+  },
   TRIM: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
     setup('app-token', 'ef319a80-949a-492e-8ee0-424fb5fc20a6');
     setup('promo-id', 'ef319a80-949a-492e-8ee0-424fb5fc20a6');
@@ -485,16 +495,12 @@ class Queue {
   }
 }
 
-//
-// Main
-//
-
 
 
 
 const gameKeys = Object.keys(GAMES);
 const listElementTemplate = `<form>
-    <div class="border-2 rounded p-2">
+    <div class="border-2 rounded p-4">
       <div>
         <input type="checkbox" name="game" class="text-blue-600 max-w-0 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Default checkbox</label>
@@ -678,14 +684,13 @@ function toggleAllGames(checkbox) {
 
 // Function to set the key amount for all games to 4
 function setKeyAmount(checkbox, amount) {
-  if (checkbox.checked) {
-    const gameAmounts = document.querySelectorAll('select[name=jumlah]');
-    gameAmounts.forEach(
-      select => {
-        select.value = amount
-      }
-    )
-    // Implementasi untuk mengubah jumlah kunci
-    // Contoh: akses elemen game tertentu dan ubah jumlahnya
-  }
+  const gameAmounts = document.querySelectorAll('select[name=jumlah]');
+  gameAmounts.forEach(select => {
+    if (checkbox.checked) {
+      select.value = amount;
+    } else {
+      select.value = 1;
+    }
+  });
+
 }
