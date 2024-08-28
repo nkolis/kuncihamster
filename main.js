@@ -620,9 +620,21 @@ async function getPromoCodesInParallel(requests) {
   }
 
   try {
-    const codes = await Promise.allSettled(tasks); // Handle both fulfilled and rejected promises
+    const codes = await Promise.allSettled(tasks);
+    // Handle both fulfilled and rejected promises
     // const successfulCodes = codes.filter(result => result.status === 'fulfilled').map(result => result.value);
     // console.log('All tasks completed:', successfulCodes);
+    if (codes.length > 1) {
+      const allKeys = keys.join('\n');
+      resultElement.innerHTML += `
+      <button 
+      class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
+      onclick='copyToClipboard(this, ${JSON.stringify(allKeys)}, "Salin Semua")'
+      data-tooltip-target="tooltip-default">
+      <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Salin semua</span>
+      </button>
+      `;
+    }
     generateButton.disabled = false; // Re-enable the button
     textGenerateButton.textContent = "Generate"
     generateButton.querySelector('#spinner').classList.add('hidden');
