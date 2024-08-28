@@ -580,7 +580,9 @@ async function getPromoCodesInParallel(requests) {
 
         // Simulasi fungsi async untuk mendapatkan kode promo
         for (let k = 0; k < request.jumlah; k++) {
-          const code = await getPromoCode(gp, request.game); // Gunakan ini dengan benar
+
+          const code = await getPromoCodeSimulation(gp, request.game); // Gunakan ini dengan benar
+          keys.push(code);
           resultElement.innerHTML += `
             <div class="flex justify-between items-center mt-2">
               <span>${code}</span>
