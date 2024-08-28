@@ -500,7 +500,7 @@ class Queue {
 
 const gameKeys = Object.keys(GAMES);
 const listElementTemplate = `<form>
-    <div class="border-2 rounded p-4">
+    <div class="border-2 rounded p-2">
       <div>
         <input type="checkbox" name="game" class="text-blue-600 max-w-0 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Default checkbox</label>
