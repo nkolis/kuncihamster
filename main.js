@@ -668,3 +668,24 @@ async function generateKeys() {
   }
 
 }
+
+
+function toggleAllGames(checkbox) {
+
+  const gameCheckboxes = document.querySelectorAll('input[name=game]');
+  gameCheckboxes.forEach(cb => cb.checked = checkbox.checked)
+}
+
+// Function to set the key amount for all games to 4
+function setKeyAmount(checkbox, amount) {
+  if (checkbox.checked) {
+    const gameAmounts = document.querySelectorAll('select[name=jumlah]');
+    gameAmounts.forEach(
+      select => {
+        select.value = amount
+      }
+    )
+    // Implementasi untuk mengubah jumlah kunci
+    // Contoh: akses elemen game tertentu dan ubah jumlahnya
+  }
+}
