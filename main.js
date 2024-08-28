@@ -549,10 +549,7 @@ for (const gameKey of gameKeys) {
 function copyToClipboard(button, text, textDefault = 'Salin') {
   navigator.clipboard.writeText(text).then(() => {
     const tooltip = button.querySelector('.tooltip-inner');
-    tooltip.textContent = 'Disalin!';
-    setTimeout(() => {
-      tooltip.textContent = textDefault;
-    }, 2000);
+    tooltip.textContent = 'Disalin✓';
   }).catch(err => {
     console.error('Gagal menyalin kunci:', err);
   });
@@ -608,22 +605,7 @@ async function getPromoCodesInParallel(requests) {
               </button>
             </div>`;
         }
-
         return true;
-
-        // return {
-        //   code,
-        //   keyHtml: `
-        //     <div class="flex justify-between items-center mt-2">
-        //       <span>${code}</span>
-        //       <button 
-        //         class="relative text-blue-600 text-sm" 
-        //         onclick="copyToClipboard(this, '${code}')"
-        //         data-tooltip-target="tooltip-default">
-        //         <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
-        //       </button>
-        //     </div>`
-        // };
       } catch (error) {
         console.error(`Error generating code for ${request.game}:`, error);
         errorMessage.classList.remove('hidden');
