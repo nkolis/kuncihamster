@@ -4,17 +4,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Copy Code List with Flowbite</title>
+  <title>Copy Code List with Icons</title>
   <!-- Tailwind CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/heroicons/1.0.6/outline/heroicons-outline.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- Flowbite JS -->
   <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+  <style>
+    .tooltip {
+      display: inline-block;
+      position: relative;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      /* Position above the button */
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltip-text::after {
+      content: " ";
+      position: absolute;
+      top: 100%;
+      /* At the bottom of the tooltip */
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body class="p-5">
-  <h1 class="text-2xl font-bold mb-4">Copy Code List with Flowbite</h1>
+  <h1 class="text-2xl font-bold mb-4">Copy Code List with Icons</h1>
 
   <!-- Input area for adding codes -->
   <textarea id="codeInput" rows="5" class="w-full p-2 border border-gray-300 rounded mb-4"
@@ -46,19 +87,14 @@
           copyBtn.setAttribute('data-tooltip-trigger', 'click');
 
           // Icon for copy
-          const copyIcon = document.createElement('svg');
-          copyIcon.className = 'w-5 h-5 copy-icon';
-          copyIcon.setAttribute('fill', 'none');
-          copyIcon.setAttribute('stroke', 'currentColor');
-          copyIcon.setAttribute('viewBox', '0 0 24 24');
-          copyIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-          copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h12M8 12h12m-7-8h7a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2V4a2 2 0 012-2z"></path>';
+          const copyIcon = document.createElement('i');
+          copyIcon.className = 'fas fa-copy w-5 h-5 copy-icon';
 
           // Tooltip element
           const tooltip = document.createElement('div');
           tooltip.id = `tooltip-copy-${index}`;
-          tooltip.className = 'absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700';
-          tooltip.textContent = 'Copied!';
+          tooltip.className = 'tooltip';
+          tooltip.innerHTML = `<span class="tooltip-text">Copied!</span>`;
 
           // Append icon to button
           copyBtn.appendChild(copyIcon);
@@ -79,18 +115,18 @@
     function copyToClipboard(text, tooltip, icon) {
       navigator.clipboard.writeText(text).then(() => {
         // Show tooltip on successful copy
-        tooltip.classList.remove('invisible', 'opacity-0');
-        tooltip.classList.add('visible', 'opacity-100');
+        tooltip.querySelector('.tooltip-text').style.visibility = 'visible';
+        tooltip.querySelector('.tooltip-text').style.opacity = '1';
 
         // Change icon to check mark
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        icon.className = 'fas fa-check w-5 h-5 copy-icon';
 
         setTimeout(() => {
-          tooltip.classList.remove('visible', 'opacity-100');
-          tooltip.classList.add('invisible', 'opacity-0');
+          tooltip.querySelector('.tooltip-text').style.visibility = 'hidden';
+          tooltip.querySelector('.tooltip-text').style.opacity = '0';
 
           // Change icon back to copy after 1 second
-          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h12M8 12h12m-7-8h7a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2V4a2 2 0 012-2z"></path>';
+          icon.className = 'fas fa-copy w-5 h-5 copy-icon';
         }, 1000); // Hide tooltip after 1 second
       }).catch(err => {
         console.error('Failed to copy: ', err);
