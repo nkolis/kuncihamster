@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copy Code List with Flowbite</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <!-- Flowbite JS -->
+  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+</head>
+
+<body class="p-5">
+  <h1 class="text-2xl font-bold mb-4">Copy Code List with Flowbite</h1>
+
+  <!-- Input area for adding codes -->
+  <textarea id="codeInput" rows="5" class="w-full p-2 border border-gray-300 rounded mb-4"
+    placeholder="Masukkan kode-kode di sini..."></textarea>
+  <br>
+  <button onclick="generateCodeList()"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate Code List</button>
+
+  <!-- Container to display the list of codes with copy buttons -->
+  <div id="codeList" class="mt-5 space-y-2"></div>
+  <script>
+    function generateCodeList() {
+      const codes = document.getElementById('codeInput').value.split('\n');
+      const codeListDiv = document.getElementById('codeList');
+      codeListDiv.innerHTML = ''; // Clear previous content
+
+      codes.forEach((code, index) => {
+        if (code.trim() !== '') {
+          const codeContainer = document.createElement('div');
+          codeContainer.className = 'flex items-center space-x-2';
+
+          const codeSpan = document.createElement('span');
+          codeSpan.className = 'code bg-gray-100 p-2 rounded w-full';
+          codeSpan.textContent = code;
+
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'copy-btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded relative';
+          copyBtn.textContent = 'Copy';
+          copyBtn.setAttribute('data-tooltip-target', `tooltip-copy-${index}`);
+          copyBtn.setAttribute('data-tooltip-trigger', 'click');
+
+          // Tooltip element
+          const tooltip = document.createElement('div');
+          tooltip.id = `tooltip-copy-${index}`;
+          tooltip.className = 'absolute z-10 invisible inline-block px-2 py-1 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700';
+          tooltip.textContent = 'Copied!';
+
+          // Add event listener for copying text to clipboard
+          copyBtn.onclick = function () {
+            copyToClipboard(code, tooltip);
+          };
+
+          codeContainer.appendChild(codeSpan);
+          codeContainer.appendChild(copyBtn);
+          codeContainer.appendChild(tooltip);
+          codeListDiv.appendChild(codeContainer);
+        }
+      });
+    }
+
+    function copyToClipboard(text, tooltip) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show tooltip on successful copy
+        tooltip.classList.remove('invisible', 'opacity-0');
+        tooltip.classList.add('visible', 'opacity-100');
+        setTimeout(() => {
+          tooltip.classList.remove('visible', 'opacity-100');
+          tooltip.classList.add('invisible', 'opacity-0');
+        }, 1000); // Hide tooltip after 1 second
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    }
+  </script>
+</body>
+
+</html>
+
+</body>
+
+</html>
