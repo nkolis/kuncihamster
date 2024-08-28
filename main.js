@@ -232,6 +232,12 @@ async function getPromoCode(gp, gameKey) {
 
 function globalId(type) {
   switch (type) {
+    case 'rand16': {
+      return Array.from(
+        crypto.getRandomValues(new Uint8Array(8)),
+        (it) => it.toString(16).padStart(2, '0'),
+      ).join('');
+    }
     case 'rand32': {
       return Array.from(
         crypto.getRandomValues(new Uint8Array(16)),
@@ -241,6 +247,9 @@ function globalId(type) {
     case 'uuid':
     case 'uuid-upper': {
       return type === 'uuid-upper' ? uuidv4().toUpperCase() : uuidv4();
+    }
+    case 'ts': {
+      return Date.now().toString();
     }
     case 'ts7d':
     case 'ts19d': {
@@ -494,7 +503,6 @@ class Queue {
     this.tick();
   }
 }
-
 
 
 
