@@ -596,7 +596,7 @@ async function getPromoCodesInParallel(requests) {
           keys.push(code);
           resultElement.innerHTML += `
             <div class="flex justify-between items-center mt-2">
-              <span>${code}</span>
+              <span class="text-sm">${code}</span>
               <button 
                 class="relative text-blue-600 text-sm" 
                 onclick="copyToClipboard(this, '${code}')"
