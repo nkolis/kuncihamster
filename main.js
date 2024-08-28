@@ -127,26 +127,6 @@ const GAMES = {
 
     await collect();
   },
-  CLONE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
-    setup('app-token', '74ee0b5b-775e-4bee-974f-63e7f4d5bacb');
-    setup('promo-id', 'fe693b26-b342-4159-8808-15e3ff7f8767');
-    setup('unity-version', '2022.3.25f1');
-
-    if (origin === 'ios') {
-      setup('user-agent', 'Myclonearmy/12 CFNetwork/1498.700.2 Darwin/23.6.0');
-    } else {
-      setup('user-agent', 'UnityPlayer/2022.3.25f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)');
-    }
-
-    await login({ clientId: id(origin === 'ios' ? 'uuid-upper' : 'rand32'), clientOrigin: origin });
-
-    for (let i = 0; !instance.hasCode; i++) {
-      await delay(TIMING_STRATEGY === 'realistic' ? 150_000 : 120_000);
-      await event({ eventId: id('uuid'), eventType: 'MiniQuest', eventOrigin: 'undefined' });
-    }
-
-    await collect();
-  },
   CUBE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
     setup('app-token', 'd1690a07-3780-4068-810f-9b5bbf2931b2');
     setup('promo-id', 'b4170868-cef0-424f-8eb9-be0622e8e8e3');
