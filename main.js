@@ -551,45 +551,38 @@ async function getPromoCodesInParallel(requests) {
   const generateButton = document.getElementById('generateButton');
   const textGenerateButton = document.getElementById('text-generate');
 
-  resultElement.textContent = '';
+  resultElement.innerHTML = '';
   errorMessage.classList.add('hidden');
 
   // Disable the button and show loading icon
   generateButton.disabled = true;
-  textGenerateButton.textContent = 'Tunggu..'
+  textGenerateButton.textContent = 'Tunggu..';
   generateButton.querySelector('#spinner').classList.remove('hidden');
-  const gameKeys = [];
+
   const tasks = [];
-  let keys = [];
+  const keys = [];
 
   // Extract game keys and create tasks efficiently
   for (const request of requests) {
-    gameKeys.push(request.game);
     tasks.push(...Array(request.jumlah).fill().map(async () => {
       try {
-
         const gp = new GamePromo(); // Create a new instance for each task
         const code = await getPromoCode(gp, request.game);
         keys.push(code);
 
-
-        const keyHtml = `
-        <div class="flex justify-between items-center mt-2">
-          <span>${code}</span>
-          <button 
-            class="relative text-blue-600 text-sm" 
-            onclick="copyToClipboard(this, '${code}')"
-            data-tooltip-target="tooltip-default">
-            <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
-            
-          </button>
-        </div>`;
-
-        resultElement.innerHTML += keyHtml;
-
-
-        console.info("Generated code:", code);
-        return code;
+        return {
+          code,
+          keyHtml: `
+            <div class="flex justify-between items-center mt-2">
+              <span>${code}</span>
+              <button 
+                class="relative text-blue-600 text-sm" 
+                onclick="copyToClipboard(this, '${code}')"
+                data-tooltip-target="tooltip-default">
+                <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
+              </button>
+            </div>`
+        };
       } catch (error) {
         console.error(`Error generating code for ${request.game}:`, error);
         errorMessage.classList.remove('hidden');
@@ -600,28 +593,39 @@ async function getPromoCodesInParallel(requests) {
   }
 
   try {
-    const codes = await Promise.allSettled(tasks);
-    // Handle both fulfilled and rejected promises
-    // const successfulCodes = codes.filter(result => result.status === 'fulfilled').map(result => result.value);
-    // console.log('All tasks completed:', successfulCodes);
-    if (codes.length > 1) {
+    const results = await Promise.allSettled(tasks);
+    // Clear and update resultElement
+    const fragment = document.createDocumentFragment();
+
+    results.forEach(result => {
+      if (result.status === 'fulfilled') {
+        const { keyHtml } = result.value;
+        fragment.appendChild(new DOMParser().parseFromString(keyHtml, 'text/html').body.firstChild);
+      }
+    });
+
+    resultElement.appendChild(fragment);
+
+    if (keys.length > 1) {
       const allKeys = keys.join('\n');
       resultElement.innerHTML += `
-      <button 
-      class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
-      onclick='copyToClipboard(this, ${JSON.stringify(allKeys)}, "Salin Semua")'
-      data-tooltip-target="tooltip-default">
-      <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Salin semua</span>
-      </button>
+        <button 
+          class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
+          onclick='copyToClipboard(this, ${JSON.stringify(allKeys)}, "Salin Semua")'
+          data-tooltip-target="tooltip-default">
+          <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Salin semua</span>
+        </button>
       `;
     }
+
     generateButton.disabled = false; // Re-enable the button
-    textGenerateButton.textContent = "Generate"
+    textGenerateButton.textContent = "Generate";
     generateButton.querySelector('#spinner').classList.add('hidden');
   } catch (error) {
-    // console.error('Error in executing tasks:', error);
+    console.error('Error in executing tasks:', error);
   }
 }
+
 
 
 async function generateKeys() {
