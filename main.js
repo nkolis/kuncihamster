@@ -544,10 +544,19 @@ function copyToClipboard(button, text, textDefault = 'Salin') {
   });
 }
 
+async function getPromoCodeSimulation(gamePromoInstance, game) {
+  // Simulasi waktu pemrosesan kode promo
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`${game}-PROMO-CODE-${Math.floor(Math.random() * 1000)}`);
+    }, 1000);
+  });
+}
+
 async function getPromoCodesInParallel(requests) {
 
   const errorMessage = document.getElementById('errorMessage');
-  const resultElement = document.getElementById('result');
+  let resultElement = document.getElementById('result');
   const generateButton = document.getElementById('generateButton');
   const textGenerateButton = document.getElementById('text-generate');
 
@@ -562,17 +571,17 @@ async function getPromoCodesInParallel(requests) {
   const tasks = [];
   const keys = [];
 
+
   // Extract game keys and create tasks efficiently
   for (const request of requests) {
-    tasks.push(...Array(request.jumlah).fill().map(async () => {
+    const taskPromises = Array(request.jumlah).fill().map(async () => {
       try {
         const gp = new GamePromo(); // Create a new instance for each task
-        const code = await getPromoCode(gp, request.game);
-        keys.push(code);
 
-        return {
-          code,
-          keyHtml: `
+        // Simulasi fungsi async untuk mendapatkan kode promo
+        for (let k = 0; k < request.jumlah; k++) {
+          const code = await getPromoCode(gp, request.game); // Gunakan ini dengan benar
+          resultElement.innerHTML += `
             <div class="flex justify-between items-center mt-2">
               <span>${code}</span>
               <button 
@@ -581,31 +590,37 @@ async function getPromoCodesInParallel(requests) {
                 data-tooltip-target="tooltip-default">
                 <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
               </button>
-            </div>`
-        };
+            </div>`;
+        }
+
+        return true;
+
+        // return {
+        //   code,
+        //   keyHtml: `
+        //     <div class="flex justify-between items-center mt-2">
+        //       <span>${code}</span>
+        //       <button 
+        //         class="relative text-blue-600 text-sm" 
+        //         onclick="copyToClipboard(this, '${code}')"
+        //         data-tooltip-target="tooltip-default">
+        //         <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
+        //       </button>
+        //     </div>`
+        // };
       } catch (error) {
         console.error(`Error generating code for ${request.game}:`, error);
         errorMessage.classList.remove('hidden');
         // Implement retry logic here (optional)
         throw error; // Re-throw for Promise.allSettled handling
       }
-    }));
+    });
+
+    tasks.push(...taskPromises);
   }
 
   try {
     const results = await Promise.allSettled(tasks);
-    // Clear and update resultElement
-    const fragment = document.createDocumentFragment();
-
-    results.forEach(result => {
-      if (result.status === 'fulfilled') {
-        const { keyHtml } = result.value;
-        fragment.appendChild(new DOMParser().parseFromString(keyHtml, 'text/html').body.firstChild);
-      }
-    });
-
-    resultElement.appendChild(fragment);
-
     if (keys.length > 1) {
       const allKeys = keys.join('\n');
       resultElement.innerHTML += `
