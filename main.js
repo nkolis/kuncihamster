@@ -580,15 +580,6 @@ document.getElementById('generateButton').addEventListener('click', function () 
   }
 
 
-  function copyToClipboard(button, text, textDefault = 'Salin') {
-    navigator.clipboard.writeText(text).then(() => {
-      const tooltip = button.querySelector('.tooltip-inner');
-      tooltip.textContent = 'Disalin✓';
-    }).catch(err => {
-      console.error('Gagal menyalin kunci:', err);
-    });
-  }
-
   async function getPromoCodeSimulation(gamePromoInstance, game) {
     // Simulasi waktu pemrosesan kode promo
     return new Promise((resolve) => {
@@ -776,4 +767,14 @@ function setKeyAmount(checkbox, amount) {
     }
   });
 
+}
+
+
+function copyToClipboard(button, text, textDefault = 'Salin') {
+  navigator.clipboard.writeText(text).then(() => {
+    const tooltip = button.querySelector('.tooltip-inner');
+    tooltip.textContent = 'Disalin✓';
+  }).catch(err => {
+    console.error('Gagal menyalin kunci:', err);
+  });
 }
