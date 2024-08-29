@@ -654,13 +654,11 @@ document.getElementById('generateButton').addEventListener('click', function () 
       return { game, time: currentDuration > max ? currentDuration : max };
     }, 0);
 
-    const timeGame = (maxDuration.time.game) ? maxDuration.time.game : maxDuration.game;
+
     const durationGame = (maxDuration.time.time) ? maxDuration.time.time : maxDuration.time;
-    const maxDurationGame = requests.find(item => item.game === timeGame);
 
-    const estimatedTime = maxDurationGame.jumlah * durationGame;
 
-    startProcess(estimatedTime);
+    startProcess(durationGame);
     // Extract game keys and create tasks efficiently
     for (const request of requests) {
       const taskPromises = Array.from({ length: request.jumlah }, async () => {
