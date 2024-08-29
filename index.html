@@ -11,6 +11,20 @@
       width: 25px;
       height: 25px;
     }
+
+    @media only screen and (max-width: 400px) {
+      .box-list {
+        width: 80px;
+      }
+
+      .box-list label {
+        font-size: 10px;
+      }
+
+      .box-list select {
+        width: 60px;
+      }
+    }
   </style>
   <title>Mini Game Hamster Generate</title>
 </head>
@@ -19,7 +33,7 @@
   <h3 class="text-center mt-4 text-2xl font-semibold text-gray-600">👾</h3>
   <p class="text-center text-sm text-gray-600 dark:hover:text-gray-300">
     Hamster Kombat Tools</p>
-  <div class="max-w-md mx-auto mt-4">
+  <div class="max-w-md mx-auto mt-4 border-2">
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
       <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
         data-tabs-toggle="#default-tab-content" role="tablist">
@@ -36,22 +50,22 @@
       </ul>
     </div>
     <div id="default-tab-content">
-      <div class="hidden p-4 rounded-lg bg-white" id="minigame" role="tabpanel" aria-labelledby="minigame-tab">
-        <div class="flex gap-2">
-          <div class="flex items-center mb-4">
+      <div class="hidden rounded-lg bg-white" id="minigame" role="tabpanel" aria-labelledby="minigame-tab">
+        <div class="flex">
+          <div class="flex items-center mb-4 gap-1">
             <input id="checkAllGames" type="checkbox"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               onclick="toggleAllGames(this)">
             <label for="checkAllGames" class="ml-2 text-sm font-medium text-gray-900">Generate Semua</label>
           </div>
-          <div class="flex items-center mb-4">
+          <div class="flex items-center mb-4 ml-2">
             <input id="checkMaxKeys" type="checkbox"
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               onclick="setKeyAmount(this, 4)">
             <label for="checkMaxKeys" class="ml-2 text-sm font-medium text-gray-900">Jumlah Maks</label>
           </div>
         </div>
-        <div class="flex flex-wrap  justify-center gap-2" id="list-game">
+        <div class="flex flex-wrap  justify-center gap-1" id="list-game">
 
         </div>
         <div class="my-4">
