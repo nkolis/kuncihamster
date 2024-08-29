@@ -651,14 +651,11 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
     const maxDuration = gameRequests.reduce((max, game) => {
       const currentDuration = generateEstimatedTime[game]?.time;
-      return { game, time: currentDuration > max ? currentDuration : max };
+      return currentDuration > max ? currentDuration : max;
     }, 0);
 
 
-    const durationGame = (maxDuration.time.time) ? maxDuration.time.time : maxDuration.time;
-
-
-    startProcess(durationGame);
+    startProcess(maxDuration);
     // Extract game keys and create tasks efficiently
     for (const request of requests) {
       const taskPromises = Array.from({ length: request.jumlah }, async () => {
