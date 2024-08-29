@@ -638,6 +638,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
     const generateButton = document.getElementById('generateButton');
     const textGenerateButton = document.getElementById('text-generate');
     const progressBar = document.getElementById('progress');
+    const spinner = document.querySelector('#spinner');
 
 
     resultElement.innerHTML = '';
@@ -645,8 +646,9 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
     // Disable the button and show loading icon
     generateButton.disabled = true;
-    textGenerateButton.textContent = 'Tunggu..';
-    generateButton.querySelector('#spinner').classList.remove('hidden');
+    textGenerateButton.textContent = '';
+    generateButton.classList.add('hidden');
+    spinner.classList.remove('hidden');
 
     const tasks = [];
     const keys = [];
@@ -684,6 +686,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
         } catch (error) {
           console.error(`Error generating code for ${request.game}:`, error);
           errorMessage.classList.remove('hidden');
+
           // Implement retry logic here (optional)
           throw error; // Re-throw for Promise.allSettled handling
         }
@@ -716,9 +719,10 @@ document.getElementById('generateButton').addEventListener('click', function () 
       `;
       }
 
+      generateButton.classList.remove('hidden');
       generateButton.disabled = false; // Re-enable the button
       textGenerateButton.textContent = "Generate";
-      generateButton.querySelector('#spinner').classList.add('hidden');
+      spinner.classList.add('hidden');
     } catch (error) {
       console.error('Error in executing tasks:', error);
     }
