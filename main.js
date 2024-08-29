@@ -620,8 +620,8 @@ document.getElementById('generateButton').addEventListener('click', function () 
         // Jika progress mencapai 100%, hentikan interval dan resolusi Promise
         if (progress >= 99) {
           clearInterval(intervalId);
-          progressBar.style.width = '100%';
-          progressBar.textContent = '100%';
+          progressBar.style.width = '99%';
+          progressBar.textContent = '99%';
           resolve();
         }
       }, updateInterval);
