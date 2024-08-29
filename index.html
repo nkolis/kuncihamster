@@ -72,8 +72,8 @@
           <label for="speed" class="block mb-2 text-sm font-medium text-gray-900">Kecepatan Generate</label>
           <select id="speed"
             class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <option value="realistic">Realistis</option>
             <option value="fastest">Lebih Cepat</option>
+            <option value="realistic">Realistis</option>
           </select>
         </div>
 
@@ -106,8 +106,13 @@
         <textarea id="codeInput" rows="5" class="w-full p-2 border border-gray-300 rounded mb-4"
           placeholder="Masukkan kode-kode di sini..."></textarea>
         <br>
-        <button onclick="generateCodeList()"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Buat List Code</button>
+        <div class="flex gap-2">
+
+          <button onclick="generateCodeList()"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Buat List Code</button>
+          <button onclick="resetCodeList()" class="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+            Hapus</button>
+        </div>
 
         <!-- Container to display the list of codes with copy buttons -->
         <div id="codeList" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg"></div>

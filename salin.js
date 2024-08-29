@@ -1,5 +1,6 @@
 function generateCodeList() {
-  const codes = document.getElementById('codeInput').value.split('\n');
+  const codeInput = document.getElementById('codeInput');
+  const codes = codeInput.value.split('\n');
   const codeListDiv = document.getElementById('codeList');
   codeListDiv.innerHTML = ''; // Clear previous content
 
@@ -18,5 +19,9 @@ function generateCodeList() {
             </div>`;
     }
   });
+}
+
+function resetCodeList() {
+  document.getElementById('codeInput').value = '';
 }
 

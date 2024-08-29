@@ -680,7 +680,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
             </button>
           </div>`;
 
-          return true; // Tugas berhasil
+
         } catch (error) {
           console.error(`Error generating code for ${request.game}:`, error);
           errorMessage.classList.remove('hidden');
@@ -694,7 +694,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
     try {
       tasks.push(startProcess(maxDuration))
-      const results = await Promise.allSettled(tasks);
+      const results = await Promise.all(tasks);
       // Get a reference to the last interval + 1
       const interval_id = window.setInterval(function () { }, Number.MAX_SAFE_INTEGER);
 
