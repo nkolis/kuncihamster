@@ -594,7 +594,6 @@ document.getElementById('generateButton').addEventListener('click', function () 
     const progressBar = document.getElementById('progress');
     progressBar.parentElement.classList.remove('hidden');
 
-
     // Update interval dalam milidetik (misalnya, setiap 100 ms)
     const updateInterval = 100;
 
@@ -604,26 +603,31 @@ document.getElementById('generateButton').addEventListener('click', function () 
     // Inisialisasi progress bar
     let progress = 0;
 
-    // Update progress bar menggunakan interval
-    const intervalId = setInterval(() => {
-      // Hitung waktu berlalu sejak proses dimulai
-      const elapsedTime = Date.now() - startTime;
+    // Kembalikan Promise yang menyelesaikan setelah progress bar selesai
+    return new Promise((resolve) => {
+      // Update progress bar menggunakan interval
+      const intervalId = setInterval(() => {
+        // Hitung waktu berlalu sejak proses dimulai
+        const elapsedTime = Date.now() - startTime;
 
-      // Hitung persentase berdasarkan estimasi waktu penyelesaian
-      progress = Math.min((elapsedTime / estimatedTime) * 99, 99);
+        // Hitung persentase berdasarkan estimasi waktu penyelesaian
+        progress = Math.min((elapsedTime / estimatedTime) * 99, 99);
 
-      // Update progress bar
-      progressBar.style.width = progress + '%';
-      progressBar.textContent = Math.floor(progress) + '%';
+        // Update progress bar
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = Math.floor(progress) + '%';
 
-      // Jika progress mencapai 100%, hentikan interval
-      if (progress >= 99) {
-        clearInterval(intervalId);
-        // alert('Estimated process complete!');
-      }
-    }, updateInterval);
-
+        // Jika progress mencapai 100%, hentikan interval dan resolusi Promise
+        if (progress >= 99) {
+          clearInterval(intervalId);
+          progressBar.style.width = '100%';
+          progressBar.textContent = '100%';
+          resolve();
+        }
+      }, updateInterval);
+    });
   }
+
 
 
   async function getPromoCodesInParallel(requests) {
@@ -655,7 +659,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
     }, 0);
 
 
-    startProcess(maxDuration);
+
     // Extract game keys and create tasks efficiently
     for (const request of requests) {
       const taskPromises = Array.from({ length: request.jumlah }, async () => {
@@ -689,6 +693,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
     }
 
     try {
+      tasks.push(startProcess(maxDuration))
       const results = await Promise.allSettled(tasks);
       // Get a reference to the last interval + 1
       const interval_id = window.setInterval(function () { }, Number.MAX_SAFE_INTEGER);
