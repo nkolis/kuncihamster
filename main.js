@@ -63,48 +63,51 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const GAMES = {
-   ZOO: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
-    setup('app-token', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
-    setup('promo-id', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
-    setup('unity-version', '2022.3.15f1');
+    ZOO: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+      setup('app-token', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
+      setup('promo-id', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
+      setup('unity-version', '2022.3.15f1');
 
-    if (origin === 'ios') {
-      setup('user-agent', 'Zoopolis/1 CFNetwork/1498.700.2 Darwin/23.6.0');
-    } else {
-      setup('user-agent', 'UnityPlayer/2022.3.15f1 (UnityWebRequest/1.0, libcurl/8.4.0-DEV)');
-    }
+      if (origin === 'ios') {
+        setup('user-agent', 'Zoopolis/1 CFNetwork/1498.700.2 Darwin/23.6.0');
+      } else {
+        setup('user-agent', 'UnityPlayer/2022.3.15f1 (UnityWebRequest/1.0, libcurl/8.4.0-DEV)');
+      }
 
-    await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'UUID' : 'h32'), clientVersion: '1.2.8' });
+      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'UUID' : 'h32'), clientVersion: '1.2.8' });
 
-    while (!instance.hasCode) {
-      await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 20_000);
-      await event({ eventId: id('uuid'), eventOrigin: 'undefined', eventType: 'ZoopolisEvent' });
-    }
+      while (!instance.hasCode) {
+        await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 20_000);
+        await event({ eventId: id('uuid'), eventOrigin: 'undefined', eventType: 'ZoopolisEvent' });
+      }
 
-    await collect();
-  },
-  GANGS: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
-    setup('app-token', 'b6de60a0-e030-48bb-a551-548372493523');
-    setup('promo-id', 'c7821fa7-6632-482c-9635-2bd5798585f9');
+      await collect();
+    },
+    GANGS: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+      setup('app-token', 'b6de60a0-e030-48bb-a551-548372493523');
+      setup('promo-id', 'c7821fa7-6632-482c-9635-2bd5798585f9');
 
-    // todo check headers
-    // todo check unity version
-    // todo adjust realistic timing
+      // todo check headers
+      // todo check unity version
+      // todo adjust realistic timing
 
-    await login({ clientOrigin: origin, clientId: id('s5_h32') });
+      await login({ clientOrigin: origin, clientId: id('s5_h32') });
 
-    while (!instance.hasCode) {
-      await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 40_000);
-      await event({ eventId: id('h16-h16'), eventOrigin: 'undefined' });
-    }
+      while (!instance.hasCode) {
+        await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 40_000);
+        await event({ eventId: id('h16-h16'), eventOrigin: 'undefined' });
+      }
 
-    await collect();
-  },
+      await collect();
+    },
     CAFE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
       setup('app-token', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
       setup('promo-id', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
 
-      await login({ clientId: id('rand16'), clientOrigin: origin, clientVersion: '2.24.0' });
+      // todo check headers
+      // todo check unity version
+
+      await login({ clientId: id('h16'), clientOrigin: origin, clientVersion: '2.24.0' });
 
       while (!instance.hasCode) {
         await delay(TIMING_STRATEGY === 'realistic' ? 90_000 : 20_000);
@@ -124,7 +127,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
         setup('user-agent', 'UnityPlayer/2021.3.17f1 (UnityWebRequest/1.0, libcurl/7.84.0-DEV)');
       }
 
-      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts7d' : 'ts19d') });
+      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts-d7' : 'ts-d19') });
 
       while (!instance.hasCode) {
         await delay(TIMING_STRATEGY === 'realistic' ? 50_000 : 20_000);
@@ -184,7 +187,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
         setup('user-agent', 'UnityPlayer/2021.3.15f1 (UnityWebRequest/1.0, libcurl/7.84.0-DEV)');
       }
 
-      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts7d' : 'ts19d') });
+      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts-d7' : 'ts-d19') });
 
       while (!instance.hasCode) {
         await delay(TIMING_STRATEGY === 'realistic' ? 30_000 : 20_000);
@@ -203,11 +206,31 @@ document.getElementById('generateButton').addEventListener('click', function () 
         setup('user-agent', 'Mozilla/5.0 (Linux; Android 12; SM-S9110 Build/W528JS; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/95.0.4638.74 Mobile Safari/537.36');
       }
 
-      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts7d' : 'ts19d') });
+      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'ts-d7' : 'ts-d19') });
 
       while (!instance.hasCode) {
         await delay(TIMING_STRATEGY === 'realistic' ? 60_000 : 20_000);
         await event({ eventOrigin: 'undefined', eventId: id('uuid'), eventType: 'spend-energy' });
+      }
+
+      await collect();
+    },
+    CLONE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+      setup('app-token', '74ee0b5b-775e-4bee-974f-63e7f4d5bacb');
+      setup('promo-id', 'fe693b26-b342-4159-8808-15e3ff7f8767');
+      setup('unity-version', '2022.3.25f1');
+
+      if (origin === 'ios') {
+        setup('user-agent', 'Myclonearmy/12 CFNetwork/1498.700.2 Darwin/23.6.0');
+      } else {
+        setup('user-agent', 'UnityPlayer/2022.3.25f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)');
+      }
+
+      await login({ clientId: id(origin === 'ios' ? 'UUID' : 'h32'), clientOrigin: origin });
+
+      for (let i = 0; !instance.hasCode; i++) {
+        await delay(TIMING_STRATEGY === 'realistic' ? 150_000 : 120_000);
+        await event({ eventId: id('uuid'), eventType: 'MiniQuest', eventOrigin: 'undefined' });
       }
 
       await collect();
@@ -243,7 +266,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
         setup('user-agent', 'UnityPlayer/2022.3.20f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)');
       }
 
-      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'uuid-upper' : 'rand32'), clientVersion: '2.4.16' });
+      await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'UUID' : 'h32'), clientVersion: '2.4.16' });
 
       while (!instance.hasCode) {
         await delay(TIMING_STRATEGY === 'realistic' ? 600_000 : 120_000);
@@ -258,7 +281,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
       await login({
         clientOrigin: origin === 'android' ? 'deviceid' : 'ios',
-        clientId: id(origin === 'ios' ? 'ts7d' : 'ts19d'),
+        clientId: id(origin === 'ios' ? 'ts-d7' : 'ts-d19'),
       });
 
       while (!instance.hasCode) {
@@ -272,7 +295,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const generateEstimatedTime = {
-   ZOO: {
+    ZOO: {
       time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 2 * 60_000
     },
     GANGS: {
@@ -311,10 +334,10 @@ document.getElementById('generateButton').addEventListener('click', function () 
   };
 
 
-
-
   const GAMES_EXPIRATIONS = {
+    BIKE: new Date('2024-08-30T07:30:00.000Z'),
     CLONE: new Date('2024-08-26T00:00:00.000Z'),
+    RACE: new Date('2024-08-30T07:30:00.000Z'),
   };
 
   //
@@ -337,6 +360,29 @@ document.getElementById('generateButton').addEventListener('click', function () 
     });
   }
 
+  function randomBytes(len) {
+    return Array.from(
+      crypto.getRandomValues(new Uint8Array(len / 2)),
+      (it) => it.toString(16).padStart(2, '0'),
+    ).join('');
+  }
+
+  function randomDigits(len) {
+    const buf = Array(len).fill(null);
+    return buf.map(() => Math.floor(Math.random() * 10)).join('');
+  }
+
+  function randomString(len, chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789') {
+    const charsLen = chars.length;
+    let result = '';
+
+    for (let i = 0; i < len; i++) {
+      result += chars.charAt(Math.floor(Math.random() * charsLen));
+    }
+
+    return result;
+  }
+
   function uuidv4() {
     return '10000000-1000-4000-8000-100000000000'.replace(
       /[018]/g,
@@ -348,33 +394,44 @@ document.getElementById('generateButton').addEventListener('click', function () 
     return gp.getCode(gameKey);
   }
 
+  /**
+   * Generates random string with provided type.
+   * Types explanation:
+   *   ts - timestamp.
+   *   h5 - random string in hex format of length 5.
+   *   s5 - random string of length 5.
+   *   5d - random string of digits of length 5.
+   *   uuid - string in UUID v4 format.
+   *   UUID - uppercase version of string in UUID v4 format.
+   */
   function globalId(type) {
     switch (type) {
-      case 'rand16': {
-        return Array.from(
-          crypto.getRandomValues(new Uint8Array(8)),
-          (it) => it.toString(16).padStart(2, '0'),
-        ).join('');
+      case 'h16': {
+        return randomBytes(16);
       }
-      case 'rand32': {
-        return Array.from(
-          crypto.getRandomValues(new Uint8Array(16)),
-          (it) => it.toString(16).padStart(2, '0'),
-        ).join('');
+      case 'h16-h16': {
+        return `${randomBytes(16)}-${randomBytes(16)}`;
       }
-      case 'uuid':
-      case 'uuid-upper': {
-        return type === 'uuid-upper' ? uuidv4().toUpperCase() : uuidv4();
+      case 'h32': {
+        return randomBytes(32);
+      }
+      case 's5_h32': {
+        return `${randomString(5)}_${randomBytes(32)}`;
       }
       case 'ts': {
         return Date.now().toString();
       }
-      case 'ts7d':
-      case 'ts19d': {
-        const timestamp = Date.now();
-        const buf = Array(type === 'ts7d' ? 7 : 19).fill();
-        const digits = buf.map(() => Math.floor(Math.random() * 10)).join('');
-        return `${timestamp}-${digits}`;
+      case 'ts-d7': {
+        return `${Date.now()}-${randomDigits(7)}`;
+      }
+      case 'ts-d19': {
+        return `${Date.now()}-${randomDigits(19)}`;
+      }
+      case 'uuid': {
+        return uuidv4();
+      }
+      case 'UUID': {
+        return uuidv4().toUpperCase();
       }
       default: {
         throw new Error(`Tried generating unknown id '${type}'.`);
