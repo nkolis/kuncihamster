@@ -7,7 +7,7 @@
 
 // Variabel global untuk menyimpan nilai yang dipilih
 let TIMING_STRATEGY = 'realistic';
-const gameKeys = ['CAFE', 'TRIM', 'RACE', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN', 'BIKE'];
+const gameKeys = ['ZOO', 'GANGS', 'CAFE', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
 const listElementTemplate = `<form>
     <div class="border-2 rounded p-2 box-list">
       <div>
@@ -63,6 +63,43 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const GAMES = {
+   ZOO: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+    setup('app-token', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
+    setup('promo-id', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
+    setup('unity-version', '2022.3.15f1');
+
+    if (origin === 'ios') {
+      setup('user-agent', 'Zoopolis/1 CFNetwork/1498.700.2 Darwin/23.6.0');
+    } else {
+      setup('user-agent', 'UnityPlayer/2022.3.15f1 (UnityWebRequest/1.0, libcurl/8.4.0-DEV)');
+    }
+
+    await login({ clientOrigin: origin, clientId: id(origin === 'ios' ? 'UUID' : 'h32'), clientVersion: '1.2.8' });
+
+    while (!instance.hasCode) {
+      await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 20_000);
+      await event({ eventId: id('uuid'), eventOrigin: 'undefined', eventType: 'ZoopolisEvent' });
+    }
+
+    await collect();
+  },
+  GANGS: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
+    setup('app-token', 'b6de60a0-e030-48bb-a551-548372493523');
+    setup('promo-id', 'c7821fa7-6632-482c-9635-2bd5798585f9');
+
+    // todo check headers
+    // todo check unity version
+    // todo adjust realistic timing
+
+    await login({ clientOrigin: origin, clientId: id('s5_h32') });
+
+    while (!instance.hasCode) {
+      await delay(TIMING_STRATEGY === 'realistic' ? 120_000 : 40_000);
+      await event({ eventId: id('h16-h16'), eventOrigin: 'undefined' });
+    }
+
+    await collect();
+  },
     CAFE: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
       setup('app-token', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
       setup('promo-id', 'bc0971b8-04df-4e72-8a3e-ec4dc663cd11');
