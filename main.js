@@ -9,12 +9,12 @@
 let TIMING_STRATEGY = 'realistic';
 const gameKeys = ['ZOO', 'GANGS', 'CAFE', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
 const listElementTemplate = `<form>
-    <div class="border-2 rounded p-2 box-list">
+    <div class="border border-gray-300 grid gap-2 rounded p-2 box-list">
       <div>
         <input type="checkbox" name="game" class="text-blue-600 max-w-0 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-          <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Default checkbox</label>
+          <label class="text-xs font-medium">Default checkbox</label>
       </div>
-      <select name="jumlah" class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
+      <select name="jumlah" class="bg-gray-50 border border-gray-300 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
         <option value="1">1 🔑</option>
         <option value="2">2 🔑</option>
         <option value="3">3 🔑</option>
@@ -739,6 +739,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
     const textGenerateButton = document.getElementById('text-generate');
     const progressBar = document.getElementById('progress');
     const spinner = document.querySelector('#spinner');
+    const counterKeys = document.querySelector('#counter');
 
 
     resultElement.innerHTML = '';
@@ -763,6 +764,11 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
     // Extract game keys and create tasks efficiently
+    let counter = 1;
+    const jumlahKunci = requests.reduce((acc, current) => {
+      return acc + parseInt(current.jumlah);
+    }, 0);
+    counterKeys.innerHTML = `0 dari ${jumlahKunci}`;
     for (const request of requests) {
       const taskPromises = Array.from({ length: request.jumlah }, async () => {
         try {
@@ -771,6 +777,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
           // Simulasi fungsi async untuk mendapatkan kode promo
           const code = await getPromoCode(gp, request.game);
           keys.push(code);
+          counterKeys.innerHTML = `${counter++} dari ${jumlahKunci}`;
           resultElement.innerHTML += `
           <div class="flex justify-between items-center mt-2">
             <span class="text-sm">${code}</span>
