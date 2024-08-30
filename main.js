@@ -272,6 +272,12 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const generateEstimatedTime = {
+   ZOO: {
+      time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 2 * 60_000
+    },
+    GANGS: {
+      time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 9 * 60_000
+    },
     CAFE: {
       time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 4 * 60_000
     },
