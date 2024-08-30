@@ -50,7 +50,7 @@
       </ul>
     </div>
     <div id="default-tab-content">
-      <div class="hidden rounded-lg bg-white" id="minigame" role="tabpanel" aria-labelledby="minigame-tab">
+      <div class="hidden rounded bg-white" id="minigame" role="tabpanel" aria-labelledby="minigame-tab">
         <div class="flex">
           <div class="flex items-center mb-4 gap-1">
             <input id="checkAllGames" type="checkbox"
@@ -71,7 +71,7 @@
         <div class="my-4">
           <label for="speed" class="block mb-2 text-sm font-medium text-gray-900">Kecepatan Generate</label>
           <select id="speed"
-            class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            class="form-select block w-full mt-1 p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
             <option value="fastest">Lebih Cepat</option>
             <option value="realistic">Realistis</option>
           </select>
@@ -99,28 +99,30 @@
             style="width: 0%" id="progress"> 0%</div>
         </div>
 
-        <div class="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-lg" id="result"></div>
+        <div class="mt-3 p-4 bg-gray-50 border border-gray-200 rounded" id="result"></div>
         <div class="text-red-500 mt-4 hidden" id="errorMessage">Error generating promo code. Please try again.</div>
       </div>
-      <div class="hidden p-4 rounded-lg bg-white" id="copytools" role="tabpanel" aria-labelledby="copytools-tab">
+      <div class="hidden p-4 rounded bg-white" id="copytools" role="tabpanel" aria-labelledby="copytools-tab">
 
         <!-- Input area for adding codes -->
         <textarea id="codeInput" rows="5" class="w-full p-2 border border-gray-300 rounded mb-4"
           placeholder="Masukkan kode-kode di sini..."></textarea>
         <br>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center justify-between">
 
           <button onclick="generateCodeList()"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Buat List Code</button>
-          <button onclick="resetCodeList()" class="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
-            Hapus</button>
-        </div>
-        <div id="filter" class="flex mt-2 gap-2 items-center">
-          <p class="text-gray-900">Filter: </p>
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold text-sm py-2 px-4 rounded">Buat List Code</button>
+          <button onclick="resetCodeList()"
+            class="bg-red-500 hover:bg-red-800 text-sm text-white font-bold py-2 px-4 rounded">
+            Hapus
+          </button>
+          <div id="filter">
+
+          </div>
         </div>
 
         <!-- Container to display the list of codes with copy buttons -->
-        <div id="codeList" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg"></div>
+        <div id="codeList" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded"></div>
       </div>
     </div>
 

@@ -395,7 +395,7 @@ async function generateKeys() {
     class="relative text-blue-600 text-sm" 
     onclick="copyToClipboard(this, '${code}')"
     data-tooltip-target="tooltip-default">
-    <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
+    <span class="tooltip-inner bg-gray-900 text-white text-xs rounded py-1 px-2 z-10">Salin</span>
     
   </button>
 </div>`;
@@ -407,7 +407,7 @@ async function generateKeys() {
   class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
   onclick='copyToClipboard(this, ${JSON.stringify(allKeys)}, "Salin Semua")'
   data-tooltip-target="tooltip-default">
-  <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Salin semua</span>
+  <span class="tooltip-inner text-blue-600 text-sm text-center rounded py-1 px-2 z-10">Salin semua</span>
 </button>
         `
       }

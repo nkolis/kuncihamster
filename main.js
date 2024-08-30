@@ -14,7 +14,7 @@ const listElementTemplate = `<form>
         <input type="checkbox" name="game" class="text-blue-600 max-w-0 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Default checkbox</label>
       </div>
-      <select name="jumlah" class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <select name="jumlah" class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
         <option value="1">1 🔑</option>
         <option value="2">2 🔑</option>
         <option value="3">3 🔑</option>
@@ -778,7 +778,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
               class="relative text-blue-600 text-sm" 
               onclick="copyToClipboard(this, '${code}')"
               data-tooltip-target="tooltip-default">
-              <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
+              <span class="tooltip-inner bg-gray-900 text-white text-xs rounded py-1 px-2 z-10">Salin</span>
             </button>
           </div>`;
 
@@ -814,7 +814,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
           class="flex w-full justify-center text-blue-600 text-sm text-center mt-4" 
           onclick='copyToClipboard(this, ${JSON.stringify(allKeys)}, "Salin Semua")'
           data-tooltip-target="tooltip-default">
-          <span class="tooltip-inner text-blue-600 text-sm text-center rounded-lg py-1 px-2 z-10">Salin semua</span>
+          <span class="tooltip-inner text-blue-600 text-sm text-center rounded py-1 px-2 z-10">Salin semua</span>
         </button>
       `;
       }

@@ -6,12 +6,12 @@ function updateUICodes(codes) {
 
       codeListDiv.innerHTML += `
             <div class="flex justify-between items-center mt-2">
-              <p class="text-sm bg-gray-100 px-2 py-1 rounded-lg w-80"> ${code}</p>
+              <p class="text-sm bg-gray-100 px-2 py-1 rounded w-80"> ${code}</p>
               <button 
                 class="relative text-blue-600 text-sm" 
                 onclick="copyToClipboard(this, '${code}')"
                 data-tooltip-target="tooltip-default">
-                <span class="tooltip-inner bg-gray-900 text-white text-xs rounded-lg py-1 px-2 z-10">Salin</span>
+                <span class="tooltip-inner bg-gray-900 text-white text-xs rounded py-1 px-2 z-10">Salin</span>
               </button>
             </div>`;
     }
@@ -33,7 +33,7 @@ function resetCodeList() {
 }
 
 const filterElementTemplate = `
-      <select id='game-filter' class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500">
+      <select id='game-filter' class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
       <option value='all'> Tampilkan semua</option>
       ${gameKeys.map(item => {
   return `<option value='${item}'> ${item}</option>`;
