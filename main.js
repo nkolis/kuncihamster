@@ -7,7 +7,7 @@
 
 // Variabel global untuk menyimpan nilai yang dipilih
 let TIMING_STRATEGY = 'realistic';
-const gameKeys = ['ZOO', 'GANGS', 'CAFE', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
+const gameKeys = ['ZOO', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
 const listElementTemplate = `<form>
     <div class="border border-gray-300 grid gap-2 rounded p-2 box-list">
       <div>
