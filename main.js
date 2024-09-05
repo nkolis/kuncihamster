@@ -75,7 +75,7 @@ document.getElementById('generateButton').addEventListener('click', function () 
   const ONLY = parseArg(['o', 'only'], (it) => it.split(',').map((it2) => it2.trim()).filter((it2) => it2 !== ''), []);
 
   const generateEstimatedTime = {
-    FLUF: {
+    TILE: {
       time: (TIMING_STRATEGY === 'realistic') ? 13 * 60_000 : 2 * 60_000
     },
     FLUF: {
