@@ -7,7 +7,7 @@
 
 // Variabel global untuk menyimpan nilai yang dipilih
 let TIMING_STRATEGY = 'realistic';
-const gameKeys = ['FLUF', 'ZOO', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
+const gameKeys = ['FLUF', 'TILE', 'ZOO', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
 const listElementTemplate = `<form>
     <div class="border border-gray-300 grid gap-2 rounded p-2 box-list">
       <div>
@@ -76,10 +76,13 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
   const generateEstimatedTime = {
     FLUF: {
+      time: (TIMING_STRATEGY === 'realistic') ? 13 * 60_000 : 2 * 60_000
+    },
+    FLUF: {
       time: (TIMING_STRATEGY === 'realistic') ? 13 * 60_000 : 3 * 60_000
     },
     ZOO: {
-      time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 2 * 60_000
+      time: (TIMING_STRATEGY === 'realistic') ? 13 * 60_000 : 2 * 60_000
     },
     GANGS: {
       time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 9 * 60_000
