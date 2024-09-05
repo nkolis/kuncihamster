@@ -7,7 +7,7 @@
 
 // Variabel global untuk menyimpan nilai yang dipilih
 let TIMING_STRATEGY = 'realistic';
-const gameKeys = ['ZOO', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
+const gameKeys = ['FLUF', 'ZOO', 'TRIM', 'POLY', 'TWERK', 'MERGE', 'CUBE', 'TRAIN'];
 const listElementTemplate = `<form>
     <div class="border border-gray-300 grid gap-2 rounded p-2 box-list">
       <div>
@@ -43,6 +43,17 @@ for (const gameKey of gameKeys) {
   gameNumKeys.setAttribute('id', `${gameKey}-select`);
   gameLabel.textContent = gameKey;
 
+  if (gameKey === "FLUF") {
+    gameNumKeys.innerHTML = '';
+    for (let i = 1; i <= 8; i++) {
+      const option = document.createElement('option');
+      const textOption = document.createTextNode(i + ' 🔑');
+      option.value = i;
+      option.append(textOption);
+      gameNumKeys.appendChild(option);
+    }
+  }
+
   // Tambahkan elemen baru ke gameListRoot
   gameListRoot.appendChild(listNode.firstElementChild);
 }
@@ -63,6 +74,27 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const GAMES = {
+    FLUF: async ({ _, collect, delay, event, getClient, id, instance, login, origin, setup }) => {
+      setup('app-token', '112887b0-a8af-4eb2-ac63-d82df78283d9');
+      setup('promo-id', '112887b0-a8af-4eb2-ac63-d82df78283d9');
+      setup('unity-version', '2022.3.27f1');
+
+      if (origin === 'ios') {
+        setup('user-agent', 'FluffCrusade/236 CFNetwork/1498.700.2 Darwin/23.6.0');
+      } else {
+        setup('user-agent', 'UnityPlayer/2022.3.27f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)');
+      }
+
+      await login(1, { clientId: id('uuid'), clientOrigin: 'deviceid' });
+      await getClient(1);
+
+      while (!instance.hasCode) {
+        await delay(TIMING_STRATEGY === 'realistic' ? 720_000 : 120_000);
+        await event(1, { eventId: id('uuid'), eventOrigin: 'undefined' });
+      }
+
+      await collect(1);
+    },
     ZOO: async ({ collect, delay, event, id, instance, login, origin, setup }) => {
       setup('app-token', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
       setup('promo-id', 'b2436c89-e0aa-4aed-8046-9b0515e1c46b');
@@ -295,6 +327,9 @@ document.getElementById('generateButton').addEventListener('click', function () 
 
 
   const generateEstimatedTime = {
+    FLUF: {
+      time: (TIMING_STRATEGY === 'realistic') ? 13 * 60_000 : 3 * 60_000
+    },
     ZOO: {
       time: (TIMING_STRATEGY === 'realistic') ? 23 * 60_000 : 2 * 60_000
     },
@@ -868,11 +903,12 @@ function toggleAllGames(checkbox) {
 }
 
 // Function to set the key amount for all games to 4
-function setKeyAmount(checkbox, amount) {
+function setKeyAmount(checkbox) {
   const gameAmounts = document.querySelectorAll('select[name=jumlah]');
   gameAmounts.forEach(select => {
+    const maxAmount = select.querySelectorAll('option').length;
     if (checkbox.checked) {
-      select.value = amount;
+      select.value = maxAmount;
     } else {
       select.value = 1;
     }
